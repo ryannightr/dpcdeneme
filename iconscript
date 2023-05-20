@@ -173,7 +173,7 @@ function script.drawUI()
             text = '       DPC GROUP \n Sunucumuza Hosgeldiniz',
             pos = vec2((screensize.x/2)-92, creditPos),
             letter = vec2(8, 16),
-            font = 'arial',
+            font = 'aria',
             color = rgbm.colors.orange
           })
     end
