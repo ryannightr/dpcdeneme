@@ -9,6 +9,10 @@
 --y is vertical
 --(0,0) is the top left corner
 
+local scriptVersion = "2.0"
+ac.debug("1. DPC Group")
+ac.debug("2. Sunucumuza Hoşgeldin")
+
 local screensize = vec2(ac.getSim().windowWidth,ac.getSim().windowHeight)
 local debugFlash, debugImage, debugLines,imageMetaLoaded = false, false, false, 0
 setInterval(function ()debugFlash = not debugFlash end, 0.5)
