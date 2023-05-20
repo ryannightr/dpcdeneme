@@ -183,8 +183,7 @@ function script.drawUI()
 -------------------------------------------------------------------
 
 
-    positionImage(image_0, 'center_left', debugImage)
-    positionImage(image_0, 'center_center', debugImage)
+    positionImage(image_0, 'bottom_left', debugImage)
 
 
 --DO NOT forget the final "end" over here, otherwise it will not work.
