@@ -180,12 +180,12 @@ Red = other users.]])
 		if ui.mouseDown() and ui.itemHovered() then offsets = offsets - ui.mouseDelta() end
 	end)
 end
+
 --endregion
 
 local function RDMBULLSHITHud()
 	ui.tabBar("sabcar", function()
 		ui.tabItem("Kayıt", tab2)
-		ui.tabItem("Car to Camera", KeybindTP_UI)
 		ui.tabItem("Map", MapTest)	
 	end)
 end
