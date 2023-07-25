@@ -181,6 +181,106 @@ Red = other users.]])
 	end)
 end
 
+if ui.checkbox("Enalbe", Settings.TPtoCam) then
+		Settings.TPtoCam = not Settings.TPtoCam
+	end
+
+
+	local distanceslider , tpbool = ui.slider("###tpdist", Settings.tpDistance, 0, 20, "TP Distance: %.0f Meters", 1)
+	if tpbool then
+		Settings.tpDistance = distanceslider
+	end
+
+	if ui.checkbox("Show TP destination when holding down TP button", Settings.ShowKeyTP) then
+		Settings.ShowKeyTP = not Settings.ShowKeyTP
+	end
+
+	--Toggles Button and starts the key listening
+	if
+		ui.button(
+			Settings.KeyValue == 0 and "Press a Key."
+			or (Settings.KeyValue == 999 and "Click to Set Key" 
+			or (Settings.KeyValue >= 1 and "Selected key: " .. Settings.KeyName)))
+	then
+		Settings.KeyValue = 0
+	end
+	ui.sameLine() --makes 🔼🔽 same line
+	--resets the key
+	if ui.button("Reset Key") then
+		Settings.KeyValue = 999
+		Settings.KeyName = "null"
+	end
+	--shows cooldown timer via script.drawUI
+	if ui.checkbox("Show Cooldown and Key", OverlayTimerKey) then
+		OverlayTimerKey = not OverlayTimerKey
+	end
+
+	--starts listening for keys when button is pressed
+	if Settings.KeyValue == 0 then
+		for key, value in pairs(ui.KeyIndex) do -- figure out how to add other input support, maybe need manual select cuz previous try was catostropgic
+			if ui.keyboardButtonDown(value) then
+				if timer.running <= 0.5 then
+					timer.running = timer.blength
+				else
+				end --anti "cooldown" bypass LOL
+				Settings.KeyValue = value
+				Settings.KeyName = tostring(key)
+			end
+		end
+	end
+end
+
+function TPtoCam_Update()
+	if Settings.TPtoCam == true then
+		if ui.keyboardButtonReleased(Settings.KeyValue) and timer.running <= 0 then
+			local teleportPoint = ac.getCameraPosition()
+			local TeleportAngle = ac.getCameraForward()
+			physics.setCarVelocity(0, vec3(0, 0, 0))
+			physics.setCarPosition(0, teleportPoint + vec3(0,-1,0) + TeleportAngle * Settings.tpDistance, -TeleportAngle * vec3(1,0,1))
+			timer.running = timer.length
+		end
+	end
+end
+
+function TPtoCam_draw3D()
+	if Settings.TPtoCam == true then
+		if Settings.ShowKeyTP and ui.keyboardButtonDown(Settings.KeyValue) then
+			render.setBlendMode(render.BlendMode.Opaque)
+			render.setCullMode(render.CullMode.Wireframe)
+			render.setDepthMode(render.DepthMode.ReadOnlyLessEqual)
+			local campos = ac.getCameraPosition():clone()
+			local camlook = ac.getCameraForward():clone():normalize()
+			local camside = ac.getCameraSide():clone()
+			campos:set(vec3(campos + vec3(0,-1,0) + camlook * Settings.tpDistance))
+	
+			local FrontBack = vec3()
+			local Sides = vec3()
+			local Top_Left = vec3()
+			local Top_Right = vec3()
+			local Rear_Left = vec3()
+			local Rear_Right= vec3()
+			local LookArrow = vec3()
+	
+			FrontBack	:set((camlook):mul(vec3(1, 0, 1))):scale(ac.getCar(0).aabbSize.x):normalize():scale(1.75)
+			Sides		:set(camside):scale(ac.getCar(0).aabbSize.x):scale(0.5)
+			Top_Left	:set(campos):add( FrontBack - Sides)
+			Top_Right	:set(campos):add( FrontBack + Sides)
+			Rear_Left	:set(campos):add(-FrontBack - Sides)
+			Rear_Right	:set(campos):add(-FrontBack + Sides)
+			render.debugLine(Top_Left,Top_Right,rgbm(1, 1, 1, 1))
+			render.debugLine(Rear_Left,Rear_Right,rgbm(1, 1, 1, 1))
+			render.debugLine(Top_Left,Rear_Left,rgbm(1, 1, 1, 1))
+			render.debugLine(Top_Right,Rear_Right,rgbm(1, 1, 1, 1))
+			render.debugLine(Top_Left, Rear_Right, rgbm(1, 1, 1, 1))
+			render.debugLine(Top_Right, Rear_Left, rgbm(1, 1, 1, 1))
+	
+			LookArrow:set(camlook):mul(vec3(1,0,1)):normalize():scale(2.5)
+			render.debugArrow(campos+vec3(0,1,0),campos,rgbm(1, 1, 1, 1),2)
+			render.debugArrow(campos,campos+LookArrow,rgbm(1, 1, 1, 1),2)
+		end
+	end
+end
+
 --endregion
 
 local function RDMBULLSHITHud()
