@@ -286,7 +286,7 @@ end
 local function RDMBULLSHITHud()
 	ui.tabBar("sabcar", function()
 		ui.tabItem("Kayıt", tab2)
-		ui.tabItem("Map", MapTest)	
+		ui.tabItem("Harita", MapTest)	
 	end)
 end
 ui.registerOnlineExtra(ui.Icons.Save, "DPC HIZLI SAVE", nil, RDMBULLSHITHud, nil, ui.OnlineExtraFlags.Tool)
