@@ -291,6 +291,8 @@ end
 local function RDMBULLSHITHud()
 	ui.tabBar("sabcar", function()
 		ui.tabItem("Kayıt", tab2)
+		ui.tabItem("Car to Camera", KeybindTP_UI)
+		ui.tabItem("Map", MapTest)	
 	end)
 end
 ui.registerOnlineExtra(ui.Icons.Save, "DPC HIZLI SAVE", nil, RDMBULLSHITHud, nil, ui.OnlineExtraFlags.Tool)
